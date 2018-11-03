@@ -5,6 +5,9 @@
       location = "group:Uber-Clone.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Uber-Clone">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
