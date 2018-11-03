@@ -44,6 +44,7 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
                             self.infoLabel.text = error!.localizedDescription
                         } else {
                             debugPrint("Sign Up Success")
+                            self.performSegue(withIdentifier: "riderSegue", sender: nil)
                         }
                     })
                 }
@@ -67,7 +68,8 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
                             self.infoLabel.isHidden  = false
                             self.infoLabel.text = error!.localizedDescription
                         } else {
-                            print("Log In Success")
+                            debugPrint("Log In Success")
+                            self.performSegue(withIdentifier: "riderSegue", sender: nil)
                         }
                     })
                 }
