@@ -16,18 +16,34 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var riderOrDriverSwitch: UISwitch!
     @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var riderLabel: UILabel!
+    @IBOutlet weak var driverLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         infoLabel.isHidden  = true
         infoLabel.text = ""
+        driverLabel.layer.borderColor = UIColor.green.cgColor
+        riderLabel.layer.borderColor = UIColor.green.cgColor
+        driverLabel.layer.borderWidth = 2.0
+        riderLabel.layer.borderWidth = 0.0
         
         // keyboard return
         emailTextField.delegate = self
         passwordTextField.delegate = self
     }
-
+    
+    @IBAction func switchClicked(_ sender: Any) {
+        if riderOrDriverSwitch.isOn {
+            driverLabel.layer.borderWidth = 2.0
+            riderLabel.layer.borderWidth = 0.0
+        } else {
+            driverLabel.layer.borderWidth = 0.0
+            riderLabel.layer.borderWidth = 2.0
+        }
+    }
+    
     @IBAction func SignUpPressed(_ sender: Any) {
         infoLabel.isHidden  = true
         infoLabel.text = ""
@@ -44,7 +60,19 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
                             self.infoLabel.text = error!.localizedDescription
                         } else {
                             debugPrint("Sign Up Success")
-                            self.performSegue(withIdentifier: "riderSegue", sender: nil)
+                            if self.riderOrDriverSwitch.isOn {
+                                // DRIVER
+                                let req = Auth.auth().currentUser?.createProfileChangeRequest()
+                                req?.displayName = "Driver"
+                                req?.commitChanges(completion: nil)
+                                self.performSegue(withIdentifier: "driverSegue", sender: nil)
+                            } else {
+                                // RIDER
+                                let req = Auth.auth().currentUser?.createProfileChangeRequest()
+                                req?.displayName = "Rider"
+                                req?.commitChanges(completion: nil)
+                                self.performSegue(withIdentifier: "riderSegue", sender: nil)
+                            }
                         }
                     })
                 }
@@ -69,7 +97,13 @@ class EntryViewController: UIViewController, UITextFieldDelegate {
                             self.infoLabel.text = error!.localizedDescription
                         } else {
                             debugPrint("Log In Success")
-                            self.performSegue(withIdentifier: "riderSegue", sender: nil)
+                            if user?.user.displayName == "Driver" {
+                            // DRIVER
+                                self.performSegue(withIdentifier: "driverSegue", sender: nil)
+                            } else {
+                                // RIDER
+                                self.performSegue(withIdentifier: "riderSegue", sender: nil)
+                            }
                         }
                     })
                 }

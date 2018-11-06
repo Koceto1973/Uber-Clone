@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3512A219218E2B8800CCF8FF /* RiderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3512A218218E2B8800CCF8FF /* RiderViewController.swift */; };
 		3512A21D218E430800CCF8FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3512A21C218E430800CCF8FF /* GoogleService-Info.plist */; };
+		353783D9218F3CD400A96CF5 /* DriverTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 353783D8218F3CD400A96CF5 /* DriverTableViewController.swift */; };
+		353783DB218F965900A96CF5 /* AcceptRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 353783DA218F965900A96CF5 /* AcceptRequestViewController.swift */; };
 		35B9C675218DC9A900074700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B9C674218DC9A900074700 /* AppDelegate.swift */; };
 		35B9C677218DC9A900074700 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B9C676218DC9A900074700 /* EntryViewController.swift */; };
 		35B9C67A218DC9A900074700 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 35B9C678218DC9A900074700 /* Main.storyboard */; };
@@ -20,6 +22,8 @@
 /* Begin PBXFileReference section */
 		3512A218218E2B8800CCF8FF /* RiderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiderViewController.swift; sourceTree = "<group>"; };
 		3512A21C218E430800CCF8FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		353783D8218F3CD400A96CF5 /* DriverTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverTableViewController.swift; sourceTree = "<group>"; };
+		353783DA218F965900A96CF5 /* AcceptRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptRequestViewController.swift; sourceTree = "<group>"; };
 		35B9C671218DC9A900074700 /* Uber-Clone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uber-Clone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		35B9C674218DC9A900074700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35B9C676218DC9A900074700 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
@@ -68,6 +72,8 @@
 				35B9C674218DC9A900074700 /* AppDelegate.swift */,
 				35B9C676218DC9A900074700 /* EntryViewController.swift */,
 				3512A218218E2B8800CCF8FF /* RiderViewController.swift */,
+				353783D8218F3CD400A96CF5 /* DriverTableViewController.swift */,
+				353783DA218F965900A96CF5 /* AcceptRequestViewController.swift */,
 				35B9C678218DC9A900074700 /* Main.storyboard */,
 				35B9C67B218DC9B900074700 /* Assets.xcassets */,
 				35B9C67D218DC9B900074700 /* LaunchScreen.storyboard */,
@@ -214,8 +220,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				35B9C677218DC9A900074700 /* EntryViewController.swift in Sources */,
+				353783D9218F3CD400A96CF5 /* DriverTableViewController.swift in Sources */,
 				3512A219218E2B8800CCF8FF /* RiderViewController.swift in Sources */,
 				35B9C675218DC9A900074700 /* AppDelegate.swift in Sources */,
+				353783DB218F965900A96CF5 /* AcceptRequestViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
