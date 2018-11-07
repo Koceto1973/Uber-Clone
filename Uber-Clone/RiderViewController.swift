@@ -56,6 +56,7 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
                             // set observer to reposition both rider and driver if one of them is moving
                             self.appDB.child("RideRequests").queryOrdered(byChild: "email").queryEqual(toValue: email).observe(.childChanged, with: { (snapshot) in
                                 self.displayDriverAndRider()
+                                // note observer is not stopped
                             })
                         }
                     }
@@ -64,6 +65,7 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    // updates and shows both rider and driver and updates button
     func displayDriverAndRider() {
         // distance between both calculation
         let driverCLLocation = CLLocation(latitude: driverLocation.latitude, longitude: driverLocation.longitude)
@@ -84,22 +86,23 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
         // show both annotations
         let riderAnno = MKPointAnnotation()
         riderAnno.coordinate = riderLocation
-        riderAnno.title = "Your Location"
+        riderAnno.title = "You"
         map.addAnnotation(riderAnno)
         let driverAnno = MKPointAnnotation()
         driverAnno.coordinate = driverLocation
-        driverAnno.title = "Your Driver"
+        driverAnno.title = "Driver"
         map.addAnnotation(driverAnno)
     }
     
+    // updates and shows rider location or both rider and driver( if accepted ) locations via above func
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let coord = manager.location?.coordinate {
             let center = CLLocationCoordinate2D(latitude: coord.latitude, longitude: coord.longitude)
             riderLocation = center
             
-            if driverCalled {  // show both rider and driver
+            if driverAccepted {  // show both rider and driver continuously
                 displayDriverAndRider()
-            } else { // show only rider
+            } else { // show only rider continuously
                 let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
                 map.setRegion(region, animated: true)
                 // do not pile lots of bubbles there
@@ -107,17 +110,21 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
                 // just one bubble
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = center
-                annotation.title = "Your Location"
+                annotation.title = "You"
                 map.addAnnotation(annotation)
             }            
         }
     }
     
+    // add/remove driver db driver request and toggle the button
     @IBAction func callADriverPressed(_ sender: Any) {
         if let email = Auth.auth().currentUser?.email {
+            
             if driverCalled {  // driver call is placed
                 driverCalled = false
                 callDriver.setTitle("Call a driver", for: .normal)
+                // driverAccepted = false // to cancel driver request NOT politely?
+                
                 // query and delete placed calls
                 appDB.child("RideRequests").queryOrdered(byChild: "email").queryEqual(toValue: email).observe(.childAdded, with: { (snapshot) in
                     snapshot.ref.removeValue() // remove matches
@@ -134,6 +141,7 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    // just a log out
     @IBAction func LogOutPressed(_ sender: Any) {
         try? Auth.auth().signOut()
         debugPrint("Log Out success")
