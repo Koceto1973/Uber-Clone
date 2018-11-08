@@ -141,7 +141,7 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    // just a log out
+    // just a rider log out
     @IBAction func LogOutPressed(_ sender: Any) {
         try? Auth.auth().signOut()
         debugPrint("Log Out success")

@@ -6,45 +6,47 @@ class AcceptRequestViewController: UIViewController {
     
     @IBOutlet weak var map: MKMapView!
     
-    var requestLocation = CLLocationCoordinate2D()
-    var driverLocation = CLLocationCoordinate2D()
-    var requestEmail = ""
+    var riderLocation = CLLocationCoordinate2D()     // configured in DriverTableVC
+    var driverLocation = CLLocationCoordinate2D()    // configured in DriverTableVC
+    var riderEmail = ""                            // configured in DriverTableVC
+    var appDB : DatabaseReference!
     
+    // display rider of interest
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let region = MKCoordinateRegion(center: requestLocation, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        appDB = Database.database().reference()
+        
+        let region = MKCoordinateRegion(center: riderLocation, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         map.setRegion(region, animated: false)
         
         let annotation = MKPointAnnotation()
-        annotation.coordinate = requestLocation
-        annotation.title = requestEmail
+        annotation.coordinate = riderLocation
+        annotation.title = riderEmail
         map.addAnnotation(annotation)
     }
     
-    @IBAction func acceptTapped(_ sender: Any) {
-        // Update the ride Request
-        
-        Database.database().reference().child("RideRequests").queryOrdered(byChild: "email").queryEqual(toValue: requestEmail).observe(.childAdded) { (snapshot) in
+    // update db and get directions
+    @IBAction func acceptRequestPressed(_ sender: Any) {
+        // Update the ride Request in db
+        appDB.child("RideRequests").queryOrdered(byChild: "email").queryEqual(toValue: riderEmail).observe(.childAdded) { (snapshot) in
             snapshot.ref.updateChildValues(["driverLat":self.driverLocation.latitude, "driverLon":self.driverLocation.longitude])
-            Database.database().reference().child("RideRequests").removeAllObservers()
+            self.appDB.child("RideRequests").removeAllObservers()
         }
         
         // Give directions
-        
-        let requestCLLocation = CLLocation(latitude: requestLocation.latitude, longitude: requestLocation.longitude)
+        let requestCLLocation = CLLocation(latitude: riderLocation.latitude, longitude: riderLocation.longitude)
         
         CLGeocoder().reverseGeocodeLocation(requestCLLocation) { (placemarks, error) in
             if let placemarks = placemarks {
                 if placemarks.count > 0 {
                     let placeMark = MKPlacemark(placemark: placemarks[0])
                     let mapItem = MKMapItem(placemark: placeMark)
-                    mapItem.name = self.requestEmail
+                    mapItem.name = self.riderEmail
                     let options = [MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDriving]
                     mapItem.openInMaps(launchOptions: options)
                 }
             }
         }
-    }
-    
+    }    
 }

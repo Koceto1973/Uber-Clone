@@ -28,18 +28,18 @@ class DriverTableViewController: UITableViewController, CLLocationManagerDelegat
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        // continuous observer for driver requests addition
         appDB.child("RideRequests").observe(.childAdded) { (snapshot) in
             // the accepted requsets by drivers are not listed anymore
             if let driverRequest = snapshot.value as? [String:AnyObject] {
-                if let lat = driverRequest["lat"] as? Double {
-                    // ???
-                } else {
+                if (driverRequest["driverLat"] as? Double) == nil {
                     self.rideRequests.append(snapshot)
                     self.tableView.reloadData()
-                }
+                }                
             }
         }
-        // periodical monitor for new requests
+        
+        // periodical table updates to show observer additions if any
         Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { (timer) in
             self.tableView.reloadData()
         }
@@ -51,10 +51,12 @@ class DriverTableViewController: UITableViewController, CLLocationManagerDelegat
         }
     }
     
+    // driver requests table view rows set up
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rideRequests.count
     }
     
+    // driver requests table view cell set up
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "rideReqestCell", for: indexPath)
         // configure cell to show distance to each rider
@@ -74,21 +76,17 @@ class DriverTableViewController: UITableViewController, CLLocationManagerDelegat
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // accepting the rider's call
-        performSegue(withIdentifier: "acceptSegue", sender: rideRequests[indexPath.row])
-    }
-    
+    // pass rider request data to accept request VC
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let acceptVC = segue.destination as? AcceptRequestViewController {
-            if let snapshot = sender as? DataSnapshot {
-                if let rideRequestDictionary = snapshot.value as? [String:AnyObject] {
-                    if let email = rideRequestDictionary["email"] as? String {
-                        if let lat = rideRequestDictionary["lat"] as? Double {
-                            if let lon = rideRequestDictionary["lon"] as? Double {
-                                acceptVC.requestEmail = email
-                                let location = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                                acceptVC.requestLocation = location
+            if let snapshot = sender as? DataSnapshot {  // sender: rideRequests[indexPath.row]
+                if let rideRequest = snapshot.value as? [String:AnyObject] {
+                    if let email = rideRequest["email"] as? String { 
+                        if let lat = rideRequest["lat"] as? Double {
+                            if let lon = rideRequest["lon"] as? Double {
+                                acceptVC.riderEmail = email
+                                let riderLocation = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                                acceptVC.riderLocation = riderLocation
                                 acceptVC.driverLocation = driverLocation
                             }
                         }
@@ -98,6 +96,13 @@ class DriverTableViewController: UITableViewController, CLLocationManagerDelegat
         }
     }
     
+    // segue to accept request VC when driver request is selected
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // accepting the rider's call
+        performSegue(withIdentifier: "acceptSegue", sender: rideRequests[indexPath.row])
+    }
+    
+    // just a driver logout
     @IBAction func logOutPressed(_ sender: Any) {
         try? Auth.auth().signOut()
         navigationController?.dismiss(animated: true, completion: nil)
